@@ -1,16 +1,21 @@
 package com.mangomusic.ui;
 
+import com.mangomusic.data.MangoMusicDataManagerDao;
 import com.mangomusic.data.ReportsDao;
 import com.mangomusic.models.ReportResult;
 import com.mangomusic.util.ConsoleColors;
 import com.mangomusic.util.InputValidator;
 
+import java.util.List;
+
 public class SpecialReportsScreen {
 
     private final ReportsDao reportsDao;
+    private final MangoMusicDataManagerDao mangoMusicDataManagerDao;
 
-    public SpecialReportsScreen(ReportsDao reportsDao) {
+    public SpecialReportsScreen(ReportsDao reportsDao, MangoMusicDataManagerDao mangoMusicDataManagerDao) {
         this.reportsDao = reportsDao;
+        this.mangoMusicDataManagerDao = mangoMusicDataManagerDao;
     }
 
     public void display() {
@@ -20,15 +25,14 @@ public class SpecialReportsScreen {
             InputValidator.clearScreen();
             displayMenu();
 
-            int choice = InputValidator.getIntInRange("Select an option: ", 0, 1);
+            int choice = InputValidator.getIntInRange("Select an option: ", 0, 2);
 
             switch (choice) {
                 case 1:
                     showMangoMusicMapped();
                     break;
                 case 2:
-                    //@TODO - Create report
-//                    showMostPlayedAlbumsByGenre();
+                    showMostPlayedAlbumsByGenre();
                     break;
                 case 3:
                     //@TODO - Create report
@@ -100,5 +104,39 @@ public class SpecialReportsScreen {
         }
 
         InputValidator.pressEnterToContinue();
+    }
+
+    private void showMostPlayedAlbumsByGenre() {
+        InputValidator.clearScreen();
+        ConsoleColors.printHeader("🎵 MOST PLAYED ALBUMS BY GENRE 🎵");
+        System.out.println("Top 5 albums ranked within each genre\n");
+
+        List<ReportResult> results = mangoMusicDataManagerDao.getMostPlayedAlbumsByGenre();
+
+        if (results.isEmpty()) {
+            ConsoleColors.printWarning("No data available for this report.");
+        } else {
+            System.out.printf("%-10s %-17s %22s %16s %15s %n", "genre", "album_title", "artist_name", "play_count", "genre_rank");
+            System.out.println("-".repeat(90));
+
+            int displayCount = Math.min(results.size(), 50);
+            for (int i = 0; i < displayCount; i++) {
+                ReportResult result = results.get(i);
+                System.out.printf("%-10s %-17s %20s %10s %15s%n",
+                        result.getString("genre"),
+                        result.getString("album_title"),
+                        result.getString("artist_name"),
+                        result.getInt("play_count"),
+                        result.getInt("genre_rank"));
+            }
+
+            if (results.size() > 50) {
+                System.out.println("\n... and " + (results.size() - 50) + " more rows");
+            }
+
+            System.out.println("\n");
+            InputValidator.pressEnterToContinue();
+        }
+
     }
 }

@@ -22,10 +22,11 @@ public class Main {
             UserDao userDao = new UserDao(dataManager);
             AlbumPlayDao albumPlayDao = new AlbumPlayDao(dataManager);
             ReportsDao reportsDao = new ReportsDao(dataManager);
+            MangoMusicDataManagerDao mangoMusicDataManagerDao = new MangoMusicDataManagerDao(dataManager);
 
             SearchScreen searchScreen = new SearchScreen(artistDao, albumDao, userDao, albumPlayDao);
             ReportsScreen reportsScreen = new ReportsScreen(reportsDao);
-            SpecialReportsScreen specialReportsScreen = new SpecialReportsScreen(reportsDao);
+            SpecialReportsScreen specialReportsScreen = new SpecialReportsScreen(reportsDao,mangoMusicDataManagerDao);
             HomeScreen homeScreen = new HomeScreen(searchScreen, reportsScreen, specialReportsScreen);
 
             homeScreen.display();

@@ -65,20 +65,21 @@ public class AlbumDao {
         try {
             Connection connection = dataManager.getConnection();
 
-            PreparedStatement statement = connection.prepareStatement(query);
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
 
-            statement.setString(1, genre);
+                statement.setString(1, genre);
 
-            try (ResultSet results = statement.executeQuery(query)) {
+                try (ResultSet results = statement.executeQuery(query)) {
 
-                while (results.next()) {
-                    int albumId = results.getInt("album_id");
-                    int artistId = results.getInt("artist_id");
-                    String title = results.getString("title");
-                    int releaseYear = results.getInt("release_year");
-                    String artistName = results.getString("artist_name");
+                    while (results.next()) {
+                        int albumId = results.getInt("album_id");
+                        int artistId = results.getInt("artist_id");
+                        String title = results.getString("title");
+                        int releaseYear = results.getInt("release_year");
+                        String artistName = results.getString("artist_name");
 
-                    albums.add(new Album(albumId, artistId, title, releaseYear, artistName));
+                        albums.add(new Album(albumId, artistId, title, releaseYear, artistName));
+                    }
                 }
             }
 
@@ -101,23 +102,22 @@ public class AlbumDao {
         try {
             Connection connection = dataManager.getConnection();
 
-            PreparedStatement statement = connection.prepareStatement(query);
+            try (PreparedStatement statement = connection.prepareStatement(query)) {
 
-            statement.setString(1, "%" + searchTerm + "%");
+                statement.setString(1, "%" + searchTerm + "%");
 
-            try (ResultSet results = statement.executeQuery()) {
-                while (results.next()) {
-                    int albumId = results.getInt("album_id");
-                    int artistId = results.getInt("artist_id");
+                try (ResultSet results = statement.executeQuery()) {
+                    while (results.next()) {
+                        int albumId = results.getInt("album_id");
+                        int artistId = results.getInt("artist_id");
+                        String title = results.getString("title");
+                        int releaseYear = results.getInt("release_year");
+                        String artistName = results.getString("artist_name");
 
-                    String title = results.getString("title");
-                    int releaseYear = results.getInt("release_year");
-                    String artistName = results.getString("artist_name");
-
-                    albums.add(new Album(albumId, artistId, title, releaseYear, artistName));
+                        albums.add(new Album(albumId, artistId, title, releaseYear, artistName));
+                    }
                 }
             }
-            statement.close();
 
         } catch (SQLException e) {
             System.err.println("Error searching for albums: " + e.getMessage());
