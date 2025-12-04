@@ -116,13 +116,13 @@ public class SpecialReportsScreen {
         if (results.isEmpty()) {
             ConsoleColors.printWarning("No data available for this report.");
         } else {
-            System.out.printf("%-10s %-17s %22s %16s %15s %n", "genre", "album_title", "artist_name", "play_count", "genre_rank");
-            System.out.println("-".repeat(90));
+            System.out.printf("%-10s %-50s %22s %16s %15s %n", "genre", "album_title", "artist_name", "play_count", "genre_rank");
+            System.out.println("-".repeat(115));
 
             int displayCount = Math.min(results.size(), 50);
             for (int i = 0; i < displayCount; i++) {
                 ReportResult result = results.get(i);
-                System.out.printf("%-10s %-17s %20s %10s %15s%n",
+                System.out.printf("%-10s %-50s %22s %16s %15s %n",
                         result.getString("genre"),
                         result.getString("album_title"),
                         result.getString("artist_name"),
